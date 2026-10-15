@@ -2,7 +2,7 @@
 
 import { tipoDePagina } from './consulta.js';
 import { Motor, nuevoTrabajo, prepararContinuacion } from './motor.js';
-import { leerTrabajo, guardarTrabajo, borrarTrabajo } from './estado.js';
+import { leerTrabajo, guardarTrabajo, borrarTrabajo, avisoAceptado, aceptarAviso } from './estado.js';
 import { crearPanel } from './ui.js';
 
 async function enviarArchivo(ruta, url, { visible = false } = {}) {
@@ -31,6 +31,8 @@ async function iniciar() {
 
   const panel = crearPanel({
     tipo,
+    avisoAceptado: await avisoAceptado(),
+    alAceptarAviso: aceptarAviso,
     alIniciar: async ({ anio, meses, opciones }) => {
       trabajo = nuevoTrabajo({ tipo, anio, meses, opciones });
       await guardarTrabajo(trabajo);

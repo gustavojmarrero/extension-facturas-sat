@@ -52,6 +52,8 @@ test('recibidas: parte el tope de 500 por día y por hora, marca el segundo satu
   await page.goto(`${ORIGEN}/ConsultaReceptor.aspx`);
   const panel = page.locator('#reporteagil-facturas-sat');
   await expect(panel.getByText('Facturas SAT a Excel')).toBeVisible();
+  await expect(panel.getByText(/no se envía nada a Reporte Ágil/)).toBeVisible();
+  await panel.getByRole('button', { name: 'Entendido, continuar' }).click();
   await panel.locator('select[name=anio]').selectOption('2026');
   await panel.locator('select[name=mes]').selectOption('9');
   await panel.locator('input[name=xml]').uncheck();
@@ -87,6 +89,7 @@ test('emitidas: XML y PDF con el mismo nombre en carpetas, se detiene en la cuot
   const page = await context.newPage();
   await page.goto(`${ORIGEN}/ConsultaEmisor.aspx`);
   const panel = page.locator('#reporteagil-facturas-sat');
+  await panel.getByRole('button', { name: 'Entendido, continuar' }).click();
   await panel.locator('select[name=anio]').selectOption('2026');
   await panel.locator('select[name=mes]').selectOption('8');
   await panel.getByRole('button', { name: /Descargar facturas emitidas/ }).click();

@@ -30,3 +30,11 @@ export async function leerCuota(rfc, hoy = fechaLocal()) {
 export async function guardarCuota(rfc, cuota) {
   await chrome.storage.local.set({ [`cuota:${rfc}`]: cuota });
 }
+
+export async function avisoAceptado() {
+  return !!(await chrome.storage.local.get('avisoAceptado')).avisoAceptado;
+}
+
+export async function aceptarAviso() {
+  await chrome.storage.local.set({ avisoAceptado: new Date().toISOString() });
+}

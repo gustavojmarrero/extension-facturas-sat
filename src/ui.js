@@ -46,7 +46,7 @@ function html(texto) {
 
 const numero = (n) => Number(n || 0).toLocaleString('es-MX');
 
-export function crearPanel({ tipo, alIniciar, alPausar, alContinuar, alExportar, alDescartar }) {
+export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () => {}, alIniciar, alPausar, alContinuar, alExportar, alDescartar }) {
   const anfitrion = document.createElement('div');
   anfitrion.id = 'reporteagil-facturas-sat';
   const raiz = anfitrion.attachShadow({ mode: 'open' });
@@ -62,6 +62,17 @@ export function crearPanel({ tipo, alIniciar, alPausar, alContinuar, alExportar,
   }
 
   const pie = `<footer class="pie">No es una herramienta del SAT. Tus facturas se procesan en tu navegador y no se envían a ningún servidor. Más herramientas gratis en <a href="${ENLACE_PANEL}" target="_blank" rel="noopener">reporteagil.com</a>.</footer>`;
+
+  // Aviso que se acepta una vez antes de la primera descarga (divulgación de datos de la
+  // Chrome Web Store): qué lee la extensión, dónde lo deja y que nada sale del navegador.
+  function aviso() {
+    return `<div class="cuerpo">
+      <p><b>Antes de empezar</b></p>
+      <p>Para armar la relación, la extensión lee la tabla de facturas del portal (folio fiscal, RFC, nombres, fechas, totales y estado) y, si lo pides, el XML y el PDF de cada factura. Guarda el Excel y los archivos en tu carpeta de Descargas y el avance en este equipo.</p>
+      <p>Todo ocurre en tu navegador: no se envía nada a Reporte Ágil ni a terceros, y la extensión nunca ve tu contraseña ni tu e.firma.</p>
+      <button class="accion" data-accion="aceptar">Entendido, continuar</button>
+    </div>`;
+  }
 
   function formulario() {
     const hoy = new Date();
@@ -119,7 +130,7 @@ export function crearPanel({ tipo, alIniciar, alPausar, alContinuar, alExportar,
   function pintar(trabajo) {
     actual = trabajo;
     panel.classList.toggle('plegado', plegado);
-    const clave = !trabajo ? 'formulario' : trabajo.tipo !== tipo ? 'otro' : `progreso:${trabajo.estado}`;
+    const clave = !trabajo ? (avisoAceptado ? 'formulario' : 'aviso') : trabajo.tipo !== tipo ? 'otro' : `progreso:${trabajo.estado}`;
     if (clave === vista && clave.startsWith('progreso')) {
       // Mientras avanza solo cambian las cifras y el mensaje: los botones se quedan quietos
       // para que un clic en «Pausar» no caiga en un botón que se acaba de reemplazar.
@@ -129,7 +140,7 @@ export function crearPanel({ tipo, alIniciar, alPausar, alContinuar, alExportar,
       return;
     }
     vista = clave;
-    const cuerpo = !trabajo ? formulario() : trabajo.tipo !== tipo ? otroTipo(trabajo) : progreso(trabajo);
+    const cuerpo = !trabajo ? (avisoAceptado ? formulario() : aviso()) : trabajo.tipo !== tipo ? otroTipo(trabajo) : progreso(trabajo);
     panel.innerHTML = cabeza() + cuerpo + pie;
   }
 
@@ -139,6 +150,11 @@ export function crearPanel({ tipo, alIniciar, alPausar, alContinuar, alExportar,
     if (accion === 'plegar') {
       plegado = !plegado;
       vista = '';
+      return pintar(actual);
+    }
+    if (accion === 'aceptar') {
+      avisoAceptado = true;
+      alAceptarAviso();
       return pintar(actual);
     }
     if (accion === 'iniciar') {
