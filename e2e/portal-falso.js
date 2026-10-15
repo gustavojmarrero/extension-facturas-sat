@@ -75,6 +75,7 @@ function scriptDePagina(tipo, datos) {
   const DATOS = ${JSON.stringify(datos)};
   const TIPO = ${JSON.stringify(tipo)};
   const COLUMNAS = ${JSON.stringify(COLUMNAS)};
+  const NOMBRES = ['PAPELERIA LA ESCUADRA SA DE CV', 'TRANSPORTES DEL BAJIO SA DE CV', 'SERVICIOS DIGITALES ALFA SC', 'FERRETERA EL MARTILLO SA DE CV', 'DISTRIBUIDORA DE ALIMENTOS SOL SA DE CV', 'CONSULTORES ASOCIADOS DEL PACIFICO SC', 'LOGISTICA EXPRESS MEXICO SA DE CV', 'IMPRENTA MODERNA SA DE CV'];
   const $ = (id) => document.getElementById(id);
   const seg = (h, m, s) => Number(h) * 3600 + Number(m) * 60 + Number(s);
   function activarFechas() {
@@ -104,7 +105,8 @@ function scriptDePagina(tipo, datos) {
     return f.fecha >= desde && f.fecha <= hasta;
   }
   function fila(f) {
-    const celdas = [f.uuid, f.emisor, 'EMISOR ' + f.emisor, f.receptor, 'RECEPTOR ' + f.receptor, f.fecha, f.fecha, 'PAC010101AAA',
+    const nombre = (rfc) => NOMBRES[parseInt(rfc.replace(/\D/g, '').slice(0, 2) || '0', 10) % NOMBRES.length];
+    const celdas = [f.uuid, f.emisor, nombre(f.emisor), f.receptor, f.receptorNombre || 'COMERCIALIZADORA DEL NORTE SA DE CV', f.fecha, f.fecha, 'PAC010101AAA',
       '$' + f.total.toLocaleString('en-US', { minimumFractionDigits: 2 }), 'Ingreso', 'Cancelable con aceptación', 'Vigente', '', '', '', ''];
     return '<tr><td><div><table><tbody><tr><td><input id="ListaFolios" class="ListaFolios" type="checkbox" value="' + f.uuid.toLowerCase() + '">'
       + '<input type="hidden" id="ListaFoliosUrl" value="URL-' + f.uuid + '"></td>'
@@ -128,8 +130,27 @@ function scriptDePagina(tipo, datos) {
   `;
 }
 
+// Aspecto genérico de portal (sin logos ni colores oficiales) para que las capturas de la ficha
+// muestren la extensión sobre una página parecida a la consulta, con datos inventados.
+const CSS = `body{margin:0;font:14px/1.4 Arial,Helvetica,sans-serif;color:#222;background:#f4f4f4}
+  .barra{background:#3a3a3a;color:#fff;padding:14px 32px;font-size:15px}
+  .contenido{max-width:1180px;margin:0 auto;padding:18px 32px}
+  h1{font-size:22px;font-weight:normal;margin:6px 0 14px}
+  form{background:#fff;border:1px solid #ddd;padding:16px 18px;border-radius:4px}
+  #filtros{display:inline-flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  select,input[type=text]{padding:4px;border:1px solid #bbb;border-radius:3px}
+  #ctl00_MainContent_BtnBusqueda{background:#555;color:#fff;border:0;padding:7px 14px;border-radius:3px;margin-left:8px}
+  #ContenedorDinamico{margin-top:14px;overflow:hidden}
+  table#ctl00_MainContent_tblResult{border-collapse:collapse;font-size:12px;white-space:nowrap}
+  #ctl00_MainContent_tblResult th{background:#e9e9e9;text-align:left;padding:6px 8px;border:1px solid #ddd}
+  #ctl00_MainContent_tblResult > tbody > tr > td{padding:5px 8px;border:1px solid #eee;background:#fff}
+  #ctl00_MainContent_tblResult td table td{border:0;padding:0 3px}
+  #ctl00_MainContent_PnlLimiteRegistros{background:#fff7e0;border:1px solid #e8d18a;padding:8px;margin-top:10px}`;
+
 export function pagina(tipo, datos) {
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Portal Contribuyentes CFDI | Buscar CFDI</title></head><body>
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Portal Contribuyentes CFDI | Buscar CFDI</title><style>${CSS}</style></head><body>
+  <div class="barra">Factura electrónica · Consulta de comprobantes</div>
+  <div class="contenido"><h1>${tipo === 'emitidas' ? 'Consultar Facturas Emitidas' : 'Consultar Facturas Recibidas'}</h1>
   <form onsubmit="return false">
     <input type="radio" id="ctl00_MainContent_RdoFolioFiscal" name="filtro" checked>
     <input type="text" id="ctl00_MainContent_TxtUUID">
@@ -140,7 +161,7 @@ export function pagina(tipo, datos) {
     <div id="ctl00_MainContent_PnlLimiteRegistros" style="display:none">La consulta realizada solo muestra los primeros 500 registros.</div>
     <div id="ctl00_MainContent_PnlNoResultados" style="display:none">No existen registros que cumplan con los criterios de búsqueda ingresados</div>
     <div id="ContenedorDinamico"></div>
-  </form>
+  </form></div>
   <script>${scriptDePagina(tipo, datos)}</script></body></html>`;
 }
 
