@@ -51,3 +51,16 @@ No es una herramienta del SAT ni está avalada por él. La publica Reporte Ágil
 ## Distribución
 
 Pública, todas las regiones, gratis.
+
+## Pasos en el panel de desarrollador
+
+Chrome no deja que una extensión (Claude in Chrome) maneje la Chrome Web Store, y el navegador de Orca no recibe el teclado en sus formularios, así que estos pasos se hacen a mano en Chrome.
+
+1. **Configuración:** nombre comercial «Reporte Ágil» → Guardar cambios. Abrir el correo de verificación que Google mandó a info@reporteagil.com. La cuenta ya está declarada como comerciante: antes de publicar, cambiar en el perfil de pagos de Google la dirección y el teléfono por los del negocio, porque se muestran en la ficha.
+2. **Elementos → Nuevo elemento:** subir `paquetes/facturas-sat-1.0.0.zip` (`npm run zip`).
+3. **Ficha de Chrome Web Store:** descripción, categoría, idioma, ícono (`iconos/128.png`), capturas 1 a 6 de `tienda/capturas/` en ese orden, mosaico promocional pequeño `tienda/capturas/mosaico-440x280.png`, sitio y asistencia (ver «Ficha» arriba).
+4. **Prácticas de privacidad:** propósito único, una justificación por permiso, código remoto «No», datos manejados y las tres certificaciones (ver «Prácticas de privacidad» arriba), URL de la política.
+5. **Distribución:** gratis, pública, todas las regiones.
+6. **Enviar para revisión.** Al aprobarse, poner su URL en `tienda_url` de `facturas-sat` en `reporteagil/src/data/sitios.json` y desplegar.
+
+La cuenta tiene un límite de 2 extensiones: con esta queda espacio para solo una de las dos de HAB-02.
