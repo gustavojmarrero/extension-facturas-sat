@@ -7,3 +7,6 @@ node_modules
 paquetes/
 playwright-report/
 test-results/
+tienda/video/
+dist-video/
+tienda/capturas-hd/

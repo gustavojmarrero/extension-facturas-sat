@@ -1,13 +1,15 @@
 // Compila la extensión en dist/ (sin minificar, para que se pueda revisar) y, con --zip,
 // arma paquetes/facturas-sat-<versión>.zip para la Chrome Web Store. Con --pruebas compila en
-// dist-pruebas/ el paquete para el portal simulado (sin pausas).
+// dist-pruebas/ el paquete para el portal simulado (sin pausas); con --video, dist-video/ para el
+// video demo (pausa corta entre consultas).
 import { build } from 'esbuild';
 import { cpSync, mkdirSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
 const raiz = new URL('..', import.meta.url).pathname;
 const pruebas = process.argv.includes('--pruebas');
-const dist = raiz + (pruebas ? 'dist-pruebas/' : 'dist/');
+const video = process.argv.includes('--video');
+const dist = raiz + (pruebas ? 'dist-pruebas/' : video ? 'dist-video/' : 'dist/');
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
@@ -20,7 +22,7 @@ await build({
   minify: false,
   legalComments: 'none',
   charset: 'utf8',
-  define: { __PRUEBAS__: pruebas ? 'true' : 'false' },
+  define: { __PRUEBAS__: pruebas ? 'true' : 'false', __PAUSA_CONSULTA__: video ? '220' : '1000' },
 });
 cpSync(raiz + 'manifest.json', dist + 'manifest.json');
 if (existsSync(raiz + 'iconos')) cpSync(raiz + 'iconos', dist + 'iconos', { recursive: true });

@@ -10,7 +10,9 @@ import { montar, facturas, ORIGEN } from '../e2e/portal-falso.js';
 
 const raiz = new URL('..', import.meta.url).pathname;
 const DIST = raiz + 'dist/';
-const SALIDA = raiz + 'tienda/capturas/';
+// ESCALA=1.5 genera versiones nítidas para el video en tienda/capturas-hd/.
+const ESCALA = Number(process.env.ESCALA || 1);
+const SALIDA = raiz + (ESCALA > 1 ? 'tienda/capturas-hd/' : 'tienda/capturas/');
 mkdirSync(SALIDA, { recursive: true });
 const temporal = mkdtempSync(join(tmpdir(), 'capturas-sat-'));
 const descargas = join(temporal, 'descargas');
@@ -27,7 +29,7 @@ const emitidas = facturas({ anio: 2026, mes: 8, porDia: 7, dias: [3, 4, 5], emis
 
 const context = await chromium.launchPersistentContext(join(temporal, 'perfil'), {
   channel: 'chromium', headless: true, acceptDownloads: true, downloadsPath: descargas,
-  viewport: { width: 1280, height: 720 }, deviceScaleFactor: 1,
+  viewport: { width: 1280, height: 720 }, deviceScaleFactor: ESCALA,
   args: [`--disable-extensions-except=${DIST}`, `--load-extension=${DIST}`],
 });
 let [sw] = context.serviceWorkers();
@@ -102,7 +104,7 @@ await context.close();
 
 // Composición: franja con el mensaje arriba y la captura debajo.
 const navegador = await chromium.launch();
-const lienzo = await navegador.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+const lienzo = await navegador.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: ESCALA });
 const FUENTE = "'Helvetica Neue', Arial, sans-serif";
 async function componer(archivo, titulo, png) {
   await lienzo.setContent(`<html><body style="margin:0;width:1280px;height:800px;background:#0c1e55;font-family:${FUENTE}">
@@ -144,11 +146,11 @@ await componerHtml('5-carpetas.png', 'XML y PDF con el mismo nombre, ordenados p
 await componer('6-aviso.png', 'Tus facturas no salen de tu navegador', crudas.aviso);
 
 // Mosaico promocional pequeño (440×280).
-const mosaico = await navegador.newPage({ viewport: { width: 440, height: 280 }, deviceScaleFactor: 1 });
+const mosaico = await navegador.newPage({ viewport: { width: 440, height: 280 }, deviceScaleFactor: ESCALA });
 await mosaico.setContent(`<html><body style="margin:0;width:440px;height:280px;background:#0c1e55;color:#fff;font-family:${FUENTE};display:flex;align-items:center;gap:22px;padding:0 30px;box-sizing:border-box">
   <div style="width:84px;height:100px;flex:none;background:#fff;border-radius:16px;display:grid;place-items:center"><div style="width:62px;height:74px">${simbolo.replace('<svg ', '<svg style="height:100%;width:auto" ')}</div></div>
   <div><div style="font-size:30px;font-weight:800;letter-spacing:-0.03em;line-height:1.05">Facturas SAT<br>a Excel</div>
   <div style="margin-top:10px;font-size:15px;color:#b9c3d9;line-height:1.4">Sin el tope de 500 · XML y PDF<br>en carpetas · Gratis</div></div></body></html>`);
 await mosaico.screenshot({ path: SALIDA + 'mosaico-440x280.png' });
 await navegador.close();
-console.log('Capturas en tienda/capturas/:', readdirSync(SALIDA).join(', '));
+console.log(`Capturas en ${SALIDA.slice(raiz.length)}:`, readdirSync(SALIDA).join(', '));
