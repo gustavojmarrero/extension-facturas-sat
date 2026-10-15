@@ -90,6 +90,7 @@ export class Motor {
     this.detenido = false;
     this.cuota = null;
     trabajo.estado = 'corriendo';
+    await this.guardar(trabajo);
     let sesionCerrada = false;
     const latido = setInterval(() => mantenerSesion().catch(() => (sesionCerrada = true)), 60000);
     try {
