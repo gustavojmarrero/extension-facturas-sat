@@ -239,7 +239,7 @@ export class Motor {
     const cuota = trabajo.rfc ? await this.cuotaDeHoy(trabajo) : null;
     trabajo.estado = pendientes ? 'faltan' : 'terminado';
     const partes = [`Listo: ${total.toLocaleString('es-MX')} facturas.`];
-    if (ruta) partes.push(`Excel en Descargas/${ruta}.`);
+    if (ruta) partes.push(`Excel en Descargas/${ruta}`);
     if (pendientes) {
       partes.push(
         cuota?.agotadaXml || cuota?.agotadaPdf

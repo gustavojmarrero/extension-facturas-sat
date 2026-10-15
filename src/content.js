@@ -47,13 +47,14 @@ async function iniciar() {
       const m = motor || new Motor({ tipo, enviarArchivo, alCambiar: (t) => panel.pintar(t) });
       try {
         const ruta = await m.exportarExcel(trabajo);
-        trabajo.mensaje = `Excel en Descargas/${ruta}.`;
+        trabajo.mensaje = `Excel en Descargas/${ruta}`;
       } catch (e) {
         trabajo.mensaje = `No se pudo crear el Excel: ${e.message}`;
       }
       await guardarTrabajo(trabajo);
       panel.pintar(trabajo);
     },
+    alMostrar: () => chrome.runtime.sendMessage({ tipo: 'mostrar' }),
     alDescartar: async () => {
       motor?.detener();
       await borrarTrabajo();

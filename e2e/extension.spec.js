@@ -52,7 +52,8 @@ test('recibidas: parte el tope de 500 por día y por hora, marca el segundo satu
   await page.goto(`${ORIGEN}/ConsultaReceptor.aspx`);
   const panel = page.locator('#reporteagil-facturas-sat');
   await expect(panel.getByText('Facturas SAT a Excel')).toBeVisible();
-  await expect(panel.getByText(/no se envía nada a Reporte Ágil/)).toBeVisible();
+  await expect(panel.getByText(/no envía nada a Reporte Ágil/)).toBeVisible();
+  await expect(panel.getByRole('link', { name: 'Política de privacidad' })).toHaveAttribute('href', 'https://reporteagil.com/extensiones/facturas-sat/privacidad');
   await panel.getByRole('button', { name: 'Entendido, continuar' }).click();
   await panel.locator('select[name=anio]').selectOption('2026');
   await panel.locator('select[name=mes]').selectOption('9');
@@ -78,6 +79,8 @@ test('recibidas: parte el tope de 500 por día y por hora, marca el segundo satu
   const cobertura = hojaDelExcel(excel.url, 'Cobertura');
   expect(cobertura.some((l) => l.includes('2026-09-07 12:00:00–12:00:00') && l.includes('Incompleto'))).toBe(true);
   await expect(panel.getByText(/Listo: 1,800 facturas/)).toBeVisible();
+  await expect(panel.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
+  await expect(panel.getByRole('button', { name: 'Ver en Descargas' })).toBeVisible();
   await context.close();
 });
 

@@ -105,7 +105,7 @@ function scriptDePagina(tipo, datos) {
     return f.fecha >= desde && f.fecha <= hasta;
   }
   function fila(f) {
-    const nombre = (rfc) => NOMBRES[parseInt(rfc.replace(/\D/g, '').slice(0, 2) || '0', 10) % NOMBRES.length];
+    const nombre = (rfc) => NOMBRES[parseInt(rfc.replace(/[^0-9]/g, '').slice(0, 2) || '0', 10) % NOMBRES.length];
     const celdas = [f.uuid, f.emisor, nombre(f.emisor), f.receptor, f.receptorNombre || 'COMERCIALIZADORA DEL NORTE SA DE CV', f.fecha, f.fecha, 'PAC010101AAA',
       '$' + f.total.toLocaleString('en-US', { minimumFractionDigits: 2 }), 'Ingreso', 'Cancelable con aceptación', 'Vigente', '', '', '', ''];
     return '<tr><td><div><table><tbody><tr><td><input id="ListaFolios" class="ListaFolios" type="checkbox" value="' + f.uuid.toLowerCase() + '">'

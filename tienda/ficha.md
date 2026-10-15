@@ -40,7 +40,7 @@ No es una herramienta del SAT ni está avalada por él. La publica Reporte Ágil
 ## Prácticas de privacidad
 
 - **Propósito único:** exportar a Excel la relación de facturas del portal del SAT («Consulta y recuperación de comprobantes») y descargar sus XML y PDF organizados en carpetas, con la sesión que abre el usuario.
-- **downloads:** guardar en la carpeta de Descargas el Excel con la relación y los XML y PDF de cada factura, en subcarpetas por RFC, tipo, año y mes. Además quita de la lista de descargas de Chrome los XML y PDF ya guardados, para no llenarla con miles de entradas; los archivos se quedan en el equipo.
+- **downloads:** guardar en la carpeta de Descargas el Excel con la relación y los XML y PDF de cada factura, en subcarpetas por RFC, tipo, año y mes, y mostrar el Excel en la carpeta con el botón «Ver en Descargas». Además quita de la lista de descargas de Chrome los XML y PDF ya guardados, para no llenarla con miles de entradas; los archivos se quedan en el equipo.
 - **storage:** guardar en el equipo el avance de la descarga en curso, para continuar si se cierra la sesión o se agota la cuota diaria del SAT, la cuenta de descargas del día y la aceptación del aviso de datos.
 - **Permiso de host (portalcfdi.facturaelectronica.sat.gob.mx):** la extensión solo trabaja en el portal de facturas del SAT: muestra su panel en las páginas de consulta, llena el formulario de búsqueda con el periodo elegido, lee la tabla de resultados y descarga los XML y PDF con la sesión del usuario. No tiene acceso a ningún otro sitio.
 - **Código remoto:** no. Todo el código va en el paquete.

@@ -36,6 +36,7 @@ async function guardar({ ruta, url, visible }) {
   await esperarFin(id);
   if (PRUEBAS) await anotarParaPruebas(ruta, url);
   else if (!visible) await chrome.downloads.erase({ id });
+  if (visible) await chrome.storage.local.set({ ultimaDescargaVisible: id });
   return id;
 }
 
@@ -46,7 +47,19 @@ async function anotarParaPruebas(ruta, url) {
   await chrome.storage.local.set({ 'pruebas:guardados': lista });
 }
 
+// «Ver en Descargas»: muestra el último Excel en la carpeta, o la carpeta de Descargas.
+async function mostrar() {
+  const { ultimaDescargaVisible: id } = await chrome.storage.local.get('ultimaDescargaVisible');
+  const [d] = id ? await chrome.downloads.search({ id }) : [];
+  if (d && d.exists !== false && d.state === 'complete') chrome.downloads.show(id);
+  else chrome.downloads.showDefaultFolder();
+}
+
 chrome.runtime.onMessage.addListener((mensaje, _remitente, responder) => {
+  if (mensaje?.tipo === 'mostrar') {
+    mostrar().then(() => responder({ ok: true }));
+    return true;
+  }
   if (mensaje?.tipo !== 'guardar') return false;
   guardar(mensaje)
     .then((id) => responder({ ok: true, id }))
