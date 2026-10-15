@@ -1,0 +1,6 @@
+node_modules
+dist/
+paquetes/
+test-results/
+playwright-report/
+.DS_Store
