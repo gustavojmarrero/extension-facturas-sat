@@ -2,6 +2,8 @@
 // en SAT/<RFC>/... Los XML y PDF se quitan de la lista de descargas de Chrome al terminar
 // (el archivo se queda en disco) para no llenarla con miles de entradas; el Excel se queda visible.
 
+import { PRUEBAS } from './config.js';
+
 const ESPERA_MS = 60000;
 
 function esperarFin(id) {
@@ -32,8 +34,16 @@ function esperarFin(id) {
 async function guardar({ ruta, url, visible }) {
   const id = await chrome.downloads.download({ url, filename: ruta, conflictAction: 'overwrite', saveAs: false });
   await esperarFin(id);
-  if (!visible) await chrome.downloads.erase({ id });
+  if (PRUEBAS) await anotarParaPruebas(ruta, url);
+  else if (!visible) await chrome.downloads.erase({ id });
   return id;
+}
+
+// Solo en el paquete de pruebas: deja la lista de archivos (y el Excel) para revisarlos.
+async function anotarParaPruebas(ruta, url) {
+  const { 'pruebas:guardados': lista = [] } = await chrome.storage.local.get('pruebas:guardados');
+  lista.push({ ruta, url: ruta.endsWith('.xlsx') ? url : undefined });
+  await chrome.storage.local.set({ 'pruebas:guardados': lista });
 }
 
 chrome.runtime.onMessage.addListener((mensaje, _remitente, responder) => {

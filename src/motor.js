@@ -11,9 +11,8 @@ import { hojasDeRelacion } from './relacion.js';
 import { libro } from './xlsx.js';
 import { CUOTA_XML_DIARIA, PAGINAS } from './portal.js';
 import { guardarTrabajo, leerCuota, guardarCuota, fechaLocal } from './estado.js';
+import { PAUSA_CONSULTA_MS, PAUSA_DESCARGA_MS } from './config.js';
 
-export const PAUSA_CONSULTA_MS = 1000;
-export const PAUSA_DESCARGA_MS = 250;
 const MAX_ERRORES = 200;
 
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));

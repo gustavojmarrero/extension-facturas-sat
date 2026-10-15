@@ -1,6 +1,7 @@
-node_modules
-dist/
-paquetes/
-test-results/
-playwright-report/
 .DS_Store
+dist-pruebas/
+dist/
+node_modules
+paquetes/
+playwright-report/
+test-results/
