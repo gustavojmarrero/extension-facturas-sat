@@ -45,16 +45,24 @@ const trabajo = () => sw.evaluate(async () => (await chrome.storage.local.get('t
 
 // Grabadora: capturas JPEG seguidas, cada una con su marca de tiempo.
 const fotos = [];
+const fallos = [];
 let grabando = true;
+let enPausa = false; // durante una navegación la captura puede quedarse esperando
 const t0 = Date.now();
 const grabar = (async () => {
   while (grabando) {
     const inicio = Date.now();
+    if (enPausa) {
+      await new Promise((r) => setTimeout(r, 30));
+      continue;
+    }
     try {
       const archivo = join(cuadros, `${String(fotos.length).padStart(5, '0')}.jpg`);
-      await page.screenshot({ path: archivo, type: 'jpeg', quality: 92 });
+      await page.screenshot({ path: archivo, type: 'jpeg', quality: 92, timeout: 1500 });
       fotos.push({ t: inicio - t0, archivo });
-    } catch {}
+    } catch (e) {
+      fallos.push({ t: inicio - t0, error: String(e.message).split('\n')[0].slice(0, 120) });
+    }
     const espera = 80 - (Date.now() - inicio);
     if (espera > 0) await new Promise((r) => setTimeout(r, espera));
   }
@@ -83,13 +91,15 @@ async function rotulo(texto) {
 }
 const logo = `<div style="width:96px;height:114px;background:#fff;border-radius:18px;display:grid;place-items:center;margin:0 auto 26px"><div style="width:70px;height:84px">${simbolo.replace('<svg ', '<svg style="height:100%;width:auto" ')}</div></div>`;
 const tarjeta = (html) => page.setContent(`<html><body style="margin:0;width:1280px;height:720px;background:#0c1e55;color:#fff;font-family:Helvetica Neue,Arial,sans-serif;display:grid;place-items:center">${html}</body></html>`);
-const imagen = (archivo) => page.setContent(`<html><body style="margin:0;background:#0c1e55;overflow:hidden"><img src="data:image/png;base64,${readFileSync(raiz + 'tienda/capturas-hd/' + archivo).toString('base64')}" style="width:1280px;height:800px;display:block;margin-top:-40px"></body></html>`);
+const imagen = (archivo) => page.setContent(`<html><body style="margin:0;background:#0c1e55;overflow:hidden"><img src="data:image/png;base64,${readFileSync(raiz + 'tienda/capturas-hd/' + archivo).toString('base64')}" style="width:1280px;height:800px;display:block;margin-top:-80px"></body></html>`);
 
 await escena('01-intro', () => tarjeta(`<div style="text-align:center">${logo}<div style="font-size:52px;font-weight:800;letter-spacing:-.03em">Facturas SAT a Excel</div>
   <div style="font-size:26px;color:#b9c3d9;margin-top:14px">Sin el tope de 500 · XML y PDF en carpetas · Gratis</div></div>`));
 await escena('02-aviso', async () => {
+  enPausa = true;
   await page.goto(`${ORIGEN}/ConsultaReceptor.aspx`);
   await panel.getByRole('button', { name: 'Entendido, continuar' }).waitFor();
+  enPausa = false;
   await rotulo('Entra al portal del SAT como siempre. Tus datos no salen de tu navegador.');
 });
 await escena('03-formulario', async () => {
@@ -119,6 +129,13 @@ grabando = false;
 await grabar;
 const total = Date.now() - t0;
 await context.close();
+const porEscena = ESCENAS.map((n, i) => {
+  const desde = marcas[n] ?? 0;
+  const hasta = marcas[ESCENAS[i + 1]] ?? total;
+  return `${n}: ${fotos.filter((f) => f.t >= desde && f.t < hasta).length} cuadros, ${fallos.filter((f) => f.t >= desde && f.t < hasta).length} fallos`;
+});
+console.log(porEscena.join('\n'));
+if (fallos.length) console.log('Primer fallo:', fallos[0].error);
 
 // Video: cada cuadro dura hasta la marca del siguiente.
 const lista = fotos.map((f, i) => `file '${f.archivo}'\nduration ${(((fotos[i + 1]?.t ?? total) - f.t) / 1000).toFixed(3)}`).join('\n') + `\nfile '${fotos.at(-1).archivo}'\n`;
@@ -146,6 +163,9 @@ if (existsSync(musica)) {
   mezcla += `;[voz][mus]amix=inputs=2:normalize=0[mix]`;
   finales = '[mix]';
 }
+// Volumen final para YouTube (normaliza a unos −14 LUFS): −16 LUFS deja margen sin saturar.
+mezcla += `;${finales}loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[final]`;
+finales = '[final]';
 const final = SALIDA + 'demo-facturas-sat.mp4';
 if (voces.length) {
   execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', mudo, ...entradas, '-filter_complex', [...filtros, mezcla].join(';'), '-map', '0:v', '-map', finales, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', segundos, '-movflags', '+faststart', final]);
