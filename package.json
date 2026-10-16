@@ -1,6 +1,6 @@
 {
   "name": "extension-facturas-sat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Extensión de Chrome de Reporte Ágil: relación de facturas del portal del SAT a Excel, XML y PDF, en el navegador.",
   "type": "module",

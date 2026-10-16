@@ -107,7 +107,7 @@ export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () =>
         <label><input type="checkbox" name="xml" checked> XML</label>
         <label><input type="checkbox" name="pdf" checked> PDF</label>
       </div>
-      <p class="aviso">Si una consulta llega al tope de 500, se parte sola por día y por hora. El SAT permite 2,000 XML al día: si un periodo tiene más, se continúa al día siguiente.</p>
+      <p class="aviso">Si una consulta llega al tope de 500, se parte sola por día y por hora. La relación en Excel sale completa; el SAT solo deja bajar 2,000 XML al día y los que falten se bajan al día siguiente.</p>
       <button class="accion" data-accion="iniciar">Descargar facturas ${etiquetaTipo}</button>
     </div>`;
   }

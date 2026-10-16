@@ -25,7 +25,7 @@ Lo que hace
 • Cobertura comprobada: el Excel trae una hoja «Cobertura» con cada consulta y si quedó completa. Si en un mismo segundo hay más de 500 facturas, lo marca para que pidas la metadata de ese segundo en el portal.
 • Relación en Excel: folio fiscal (UUID), fechas, RFC y nombre del emisor y del receptor, efecto, estado, estatus de cancelación y total. Con el XML agrega serie, folio, moneda, subtotal, descuento, impuestos trasladados y retenidos, método y forma de pago y uso del CFDI.
 • XML y PDF en carpetas: SAT/<RFC>/Emitidas o Recibidas/<año>/<mes>/, con nombres como 2026-09-01_<RFC de la contraparte>_<serie-folio>_<UUID>, iguales para el XML y el PDF.
-• Respeta la cuota del SAT: el portal permite 2,000 XML al día. Si un periodo tiene más, la extensión se detiene y al día siguiente continúa donde se quedó.
+• Excel completo aunque pases de la cuota: el SAT solo deja bajar 2,000 XML al día. La relación en Excel sale con todas las facturas del periodo; los XML que falten (y sus PDF) se bajan al día siguiente con «Continuar descargas» y el Excel se completa con sus datos.
 • Puedes pausar y continuar. Si se cierra la sesión, vuelves a entrar y sigues sin perder lo avanzado.
 
 Privacidad

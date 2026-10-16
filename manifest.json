@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Facturas SAT a Excel, XML y PDF — Reporte Ágil",
   "short_name": "Facturas SAT a Excel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Relación de tus facturas emitidas y recibidas del portal del SAT en Excel, sin el tope de 500, con XML y PDF en carpetas.",
   "homepage_url": "https://reporteagil.com/extensiones",
   "icons": { "16": "iconos/16.png", "32": "iconos/32.png", "48": "iconos/48.png", "128": "iconos/128.png" },

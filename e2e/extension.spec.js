@@ -84,7 +84,7 @@ test('recibidas: parte el tope de 500 por día y por hora, marca el segundo satu
   await context.close();
 });
 
-test('emitidas: XML y PDF con el mismo nombre en carpetas, se detiene en la cuota y continúa otro día', async () => {
+test('emitidas: XML y PDF con el mismo nombre en carpetas, Excel completo al agotarse la cuota y archivos otro día', async () => {
   const RFC = 'AAA010101AAA';
   const datos = facturas({ anio: 2026, mes: 8, porDia: 3, dias: [3, 4, 5, 6], emisor: RFC });
   const { context, sw } = await abrir();
@@ -103,6 +103,9 @@ test('emitidas: XML y PDF con el mismo nombre en carpetas, se detiene en la cuot
   expect(conXml).toHaveLength(8);
   expect(Object.values(t.archivos).filter((a) => a.pdf)).toHaveLength(8);
   await expect(panel.getByText(/cuota diaria del SAT/)).toBeVisible();
+  // La cuota solo frena los archivos: la relación sale con todas las facturas.
+  const primerExcel = (await almacen(sw, 'pruebas:guardados')).filter((g) => g.ruta.endsWith('.xlsx')).at(-1);
+  expect(hojaDelExcel(primerExcel.url, 'Facturas').slice(1)).toHaveLength(datos.length);
 
   const f = datos.find((x) => x.serie === 'F');
   const esperado = `SAT/${RFC}/Emitidas/2026/08/${f.fecha.slice(0, 10)}_${f.receptor}_F-${f.folio}_${f.uuid}`;

@@ -5,7 +5,7 @@ Extensión de Chrome gratuita de [Reporte Ágil](https://reporteagil.com/extensi
 - exporta a Excel la relación de facturas emitidas o recibidas de un mes o de un año;
 - parte sola por día y por hora cada consulta que llega al tope de 500 resultados del portal, y deja en la hoja «Cobertura» qué quedó completo;
 - descarga el XML y el PDF de cada factura en `SAT/<RFC>/Emitidas|Recibidas/<año>/<mes>/`, con el mismo nombre para los dos;
-- respeta la cuota de 2,000 XML al día y continúa al día siguiente.
+- saca la relación completa aunque el periodo pase de la cuota de 2,000 XML al día; los XML y PDF que falten se bajan al día siguiente.
 
 No es una herramienta del SAT. Todo ocurre en el navegador: no envía facturas ni datos a ningún servidor y nunca lee la contraseña ni la e.firma. [Política de privacidad](https://reporteagil.com/extensiones/facturas-sat/privacidad).
 
@@ -17,7 +17,7 @@ No es una herramienta del SAT. Todo ocurre en el navegador: no envía facturas n
 | `src/intervalos.js` | Intervalos de consulta y cómo se parten: mes → días → mitades del día hasta un segundo. |
 | `src/consulta.js` | Llena el formulario, pulsa «Buscar CFDI», espera a que el portal reemplace la tabla y la lee. |
 | `src/descargas.js` | XML y PDF por el mismo camino que los botones del portal (`ValidarDescarga` y luego el archivo). |
-| `src/motor.js` | Recorre el periodo, registra las facturas, descarga, guarda el avance y se detiene ante la cuota o el cierre de sesión. |
+| `src/motor.js` | Recorre el periodo, registra las facturas, descarga, guarda el avance, deja pendientes los archivos al agotarse la cuota y se detiene si se cierra la sesión. |
 | `src/xlsx.js`, `src/relacion.js` | Excel sin dependencias: hojas Facturas, Cobertura y Resumen. |
 | `src/ui.js`, `src/content.js` | Panel dentro del portal (Shadow DOM). |
 | `src/background.js` | Guarda los archivos con `chrome.downloads`. |
