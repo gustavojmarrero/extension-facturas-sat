@@ -55,6 +55,7 @@ async function iniciar() {
       panel.pintar(trabajo);
     },
     alMostrar: () => chrome.runtime.sendMessage({ tipo: 'mostrar' }),
+    alValidar: () => chrome.runtime.sendMessage({ tipo: 'abrirValidador' }),
     alDescartar: async () => {
       motor?.detener();
       await borrarTrabajo();

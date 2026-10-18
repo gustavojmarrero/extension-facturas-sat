@@ -6,8 +6,13 @@
   "description": "Relación de tus facturas emitidas y recibidas del portal del SAT en Excel, sin el tope de 500, con XML y PDF en carpetas.",
   "homepage_url": "https://reporteagil.com/extensiones",
   "icons": { "16": "iconos/16.png", "32": "iconos/32.png", "48": "iconos/48.png", "128": "iconos/128.png" },
+  "action": {
+    "default_title": "Validar CFDI ante el SAT",
+    "default_icon": { "16": "iconos/16.png", "32": "iconos/32.png" }
+  },
   "permissions": ["downloads", "storage"],
   "host_permissions": ["https://portalcfdi.facturaelectronica.sat.gob.mx/*"],
+  "optional_host_permissions": ["https://consultaqr.facturaelectronica.sat.gob.mx/*"],
   "background": { "service_worker": "background.js" },
   "content_scripts": [
     {

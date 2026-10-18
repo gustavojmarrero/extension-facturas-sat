@@ -55,7 +55,24 @@ async function mostrar() {
   else chrome.downloads.showDefaultFolder();
 }
 
+// El ícono de la extensión y el enlace del panel abren el validador, o lo traen al frente si ya
+// está abierto (getContexts ve las páginas propias sin el permiso «tabs»).
+async function abrirValidador() {
+  const url = chrome.runtime.getURL('validar.html');
+  const [abierta] = (await chrome.runtime.getContexts?.({ contextTypes: ['TAB'], documentUrls: [url] })) || [];
+  if (abierta?.tabId >= 0) {
+    await chrome.tabs.update(abierta.tabId, { active: true });
+    if (abierta.windowId >= 0) await chrome.windows.update(abierta.windowId, { focused: true });
+  } else await chrome.tabs.create({ url });
+}
+
+chrome.action.onClicked.addListener(() => abrirValidador());
+
 chrome.runtime.onMessage.addListener((mensaje, _remitente, responder) => {
+  if (mensaje?.tipo === 'abrirValidador') {
+    abrirValidador().then(() => responder({ ok: true }), (e) => responder({ ok: false, error: e.message }));
+    return true;
+  }
   if (mensaje?.tipo === 'mostrar') {
     mostrar().then(() => responder({ ok: true }));
     return true;

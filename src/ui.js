@@ -44,6 +44,7 @@ p { margin: 0; }
 .puntos li { position: relative; background: #f7f8fa; border: 1px solid #e3e7ee; border-radius: 6px; padding: 7px 10px 7px 28px; }
 .puntos li::before { content: '✓'; position: absolute; left: 10px; top: 7px; color: #0b6bd3; font-weight: 800; }
 .enlace { color: #0b6bd3; font-weight: 600; justify-self: start; }
+button.enlace { font: inherit; font-weight: 600; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-align: left; }
 .barra { height: 6px; background: #eef1f6; border-radius: 999px; overflow: hidden; }
 .barra span { display: block; height: 100%; background: #0b6bd3; border-radius: 999px; transition: width .4s ease; }
 .ruta { display: block; margin-top: 4px; font: 11px/1.45 ui-monospace, 'SFMono-Regular', Menlo, monospace; color: #4a5675; }
@@ -60,7 +61,7 @@ function mensajeHtml(texto) {
   return html(texto).replace(/Descargas\/(\S+?\.xlsx)\.?/, (_, ruta) => `<span class="ruta">Descargas/${ruta.replace(/\//g, '/<wbr>')}</span>`);
 }
 
-export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () => {}, alIniciar, alPausar, alContinuar, alExportar, alMostrar, alDescartar }) {
+export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () => {}, alIniciar, alPausar, alContinuar, alExportar, alMostrar, alDescartar, alValidar = () => {} }) {
   const anfitrion = document.createElement('div');
   anfitrion.id = 'reporteagil-facturas-sat';
   const raiz = anfitrion.attachShadow({ mode: 'open' });
@@ -74,6 +75,9 @@ export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () =>
     return `<header class="cabeza">${SIMBOLO}<div class="titulo"><strong>Facturas SAT a Excel</strong><small>de Reporte Ágil · facturas ${etiquetaTipo}</small></div>
       <button class="plegar" data-accion="plegar" aria-label="${plegado ? 'Mostrar' : 'Ocultar'} el panel">${plegado ? '▴' : '▾'}</button></header>`;
   }
+
+  // Lleva al validador (validar.html), que abre el service worker en una pestaña.
+  const enlaceValidador = `<button class="enlace" data-accion="validar">¿Ya tienes los XML? Valida su estado ante el SAT</button>`;
 
   const pie = `<footer class="pie">No es una herramienta del SAT. Tus facturas se procesan en tu navegador y no se envían a ningún servidor. Más herramientas gratis en <a href="${ENLACE_PANEL}" target="_blank" rel="noopener">reporteagil.com</a>.</footer>`;
 
@@ -109,6 +113,7 @@ export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () =>
       </div>
       <p class="aviso">Si una consulta llega al tope de 500, se parte sola por día y por hora. La relación en Excel sale completa; el SAT solo deja bajar 2,000 XML al día y los que falten se bajan al día siguiente.</p>
       <button class="accion" data-accion="iniciar">Descargar facturas ${etiquetaTipo}</button>
+      ${enlaceValidador}
     </div>`;
   }
 
@@ -137,6 +142,7 @@ export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () =>
       <div class="barra" role="progressbar" aria-label="Avance de las consultas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${avance}"><span style="width:${avance}%"></span></div>
       <div class="mensaje" aria-live="polite">${mensajeHtml(t.mensaje || '')}</div>
       <div class="botones">${botones}</div>
+      ${t.estado === 'terminado' || t.estado === 'faltan' ? enlaceValidador : ''}
     </div>`;
   }
 
@@ -186,7 +192,7 @@ export function crearPanel({ tipo, avisoAceptado = false, alAceptarAviso = () =>
       const meses = mes === 'todos' ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [Number(mes)];
       return alIniciar({ anio, meses, opciones });
     }
-    ({ pausar: alPausar, continuar: alContinuar, exportar: alExportar, mostrar: alMostrar, descartar: alDescartar })[accion]?.();
+    ({ pausar: alPausar, continuar: alContinuar, exportar: alExportar, mostrar: alMostrar, descartar: alDescartar, validar: alValidar })[accion]?.();
   });
 
   return { pintar };
