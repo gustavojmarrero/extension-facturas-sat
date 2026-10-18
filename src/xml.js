@@ -12,7 +12,7 @@ function atributos(xml, etiqueta) {
 }
 
 // «&amp;», «&#209;» y demás entidades de un valor, para los RFC y nombres que las llevan.
-function sinEntidades(valor = '') {
+export function sinEntidades(valor = '') {
   return valor.replace(/&(?:#x([0-9a-f]+)|#(\d+)|(amp|lt|gt|quot|apos));/gi, (_, hex, dec, nombre) =>
     hex ? String.fromCodePoint(parseInt(hex, 16)) : dec ? String.fromCodePoint(Number(dec)) : { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }[nombre.toLowerCase()],
   );
