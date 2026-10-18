@@ -1,12 +1,21 @@
 // Datos del CFDI que el portal no muestra en la tabla y que sirven en la relación.
 // Se leen con expresiones regulares para no depender de DOMParser (y poder probarlo en Node).
 
+// Atributos de la primera etiqueta con ese nombre (con o sin prefijo). Acepta comillas simples
+// o dobles y un «>» dentro de un valor, que el XML permite sin escapar.
 function atributos(xml, etiqueta) {
-  const apertura = new RegExp(`<(?:[\\w-]+:)?${etiqueta}\\b([^>]*)>`).exec(xml);
+  const apertura = new RegExp(`<(?:[\\w-]+:)?${etiqueta}\\b((?:[^>"']|"[^"]*"|'[^']*')*)>`).exec(xml);
   if (!apertura) return {};
   const lista = {};
-  for (const [, nombre, valor] of apertura[1].matchAll(/([\w:-]+)\s*=\s*"([^"]*)"/g)) lista[nombre] = valor;
+  for (const [, nombre, doble, simple] of apertura[1].matchAll(/([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)) lista[nombre] = doble ?? simple;
   return lista;
+}
+
+// «&amp;», «&#209;» y demás entidades de un valor, para los RFC y nombres que las llevan.
+function sinEntidades(valor = '') {
+  return valor.replace(/&(?:#x([0-9a-f]+)|#(\d+)|(amp|lt|gt|quot|apos));/gi, (_, hex, dec, nombre) =>
+    hex ? String.fromCodePoint(parseInt(hex, 16)) : dec ? String.fromCodePoint(Number(dec)) : { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }[nombre.toLowerCase()],
+  );
 }
 
 // Los impuestos del comprobante son los únicos <cfdi:Impuestos> con TotalImpuestos...
@@ -39,6 +48,27 @@ export function datosDelXml(xml) {
     metodoPago: c.MetodoPago || '',
     formaPago: c.FormaPago || '',
     usoCfdi: receptor.UsoCFDI || '',
+  };
+}
+
+// Lo que pide el validador: la expresión impresa del CFDI (UUID, RFC del emisor y del receptor,
+// total y sello) y lo que se muestra junto al resultado. El CFDI 3.2 escribe sus atributos en
+// minúsculas; el total y el sello quedan como texto, tal cual vienen en el XML.
+export function datosParaValidar(xml) {
+  const c = atributos(xml, 'Comprobante');
+  const emisor = atributos(xml, 'Emisor');
+  const receptor = atributos(xml, 'Receptor');
+  const timbre = atributos(xml, 'TimbreFiscalDigital');
+  const valor = (o, nombre) => sinEntidades(o[nombre] ?? o[nombre.toLowerCase()] ?? '').trim();
+  return {
+    version: valor(c, 'Version'),
+    uuid: valor(timbre, 'UUID'),
+    rfcEmisor: valor(emisor, 'Rfc'),
+    nombreEmisor: valor(emisor, 'Nombre'),
+    rfcReceptor: valor(receptor, 'Rfc'),
+    fecha: valor(c, 'Fecha'),
+    total: valor(c, 'Total'),
+    sello: valor(c, 'Sello').replace(/\s+/g, ''),
   };
 }
 
