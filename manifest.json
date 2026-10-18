@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Facturas SAT a Excel, XML y PDF — Reporte Ágil",
+  "name": "Facturas SAT a Excel, XML y PDF + validar CFDI — Reporte Ágil",
   "short_name": "Facturas SAT a Excel",
   "version": "1.1.0",
   "description": "Relación de tus facturas del SAT en Excel, sin el tope de 500, con XML y PDF en carpetas. Valida el estado y EFOS de tus CFDI.",

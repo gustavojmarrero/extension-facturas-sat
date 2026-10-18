@@ -4,8 +4,7 @@ Textos para el panel de desarrollador (editor «Reporte Ágil», info@reporteagi
 
 ## Ficha
 
-- **Nombre** (del manifiesto): Facturas SAT a Excel, XML y PDF — Reporte Ágil
-- **Nombre propuesto para 1.1.0:** «Facturas SAT a Excel, XML y PDF + validar CFDI — Reporte Ágil» (61 de 75 caracteres), para salir en las búsquedas de «validar cfdi» de la tienda. Sin aplicar: si se acepta, cambiar `name` en `manifest.json` y volver a correr `npm run zip`.
+- **Nombre** (del manifiesto, 61 de 75 caracteres): Facturas SAT a Excel, XML y PDF + validar CFDI — Reporte Ágil. Desde 1.1.0 lleva «validar CFDI» para salir en esas búsquedas de la tienda; hasta 1.0.1 era «Facturas SAT a Excel, XML y PDF — Reporte Ágil».
 - **Resumen** (del manifiesto, 126 de 132): Relación de tus facturas del SAT en Excel, sin el tope de 500, con XML y PDF en carpetas. Valida el estado y EFOS de tus CFDI.
 - **Categoría:** Productividad › Herramientas
 - **Idioma:** Español (Latinoamérica)
