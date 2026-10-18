@@ -76,7 +76,9 @@ La cuenta tiene un límite de 2 extensiones: con esta queda espacio para solo un
 ## Actualización a 1.1.0 (validador)
 
 1. Antes de enviar: publicar en reporteagil.com la política de privacidad con el párrafo del validador (qué se envía al SAT).
-2. **Paquete:** subir `paquetes/facturas-sat-1.1.0.zip` (`npm run zip`). Si se acepta el nombre propuesto, cambiar `name` en el manifiesto antes del zip.
+2. **Paquete:** subir `paquetes/facturas-sat-1.1.0.zip` (`npm run zip`), ya con el nombre nuevo.
 3. **Ficha:** descripción nueva (arriba) y, si se quiere, una captura del validador.
 4. **Prácticas de privacidad:** propósito único nuevo, justificación del permiso de host opcional y «Datos que maneja» con lo que se envía al SAT.
 5. La advertencia de permisos no cambia (el host nuevo es opcional y `action` no pide permisos), así que Chrome no desactiva la extensión a quienes ya la tienen.
+
+Enviada a revisión el 17 de octubre de 2026 con publicación automática: paquete, descripción nueva, propósito único y justificación del permiso de host (los dos dominios en el mismo campo). Sin captura del validador.
