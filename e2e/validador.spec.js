@@ -147,7 +147,9 @@ test('detener deja pendientes los que faltan y Validar sigue con ellos', async (
 });
 
 test('el panel del portal abre el validador', async () => {
-  const { context, id } = await abrir();
+  const { context, sw, id } = await abrir();
+  // Playwright no puede pulsar el ícono de la barra: se comprueba que el clic tiene quien lo atienda.
+  expect(await sw.evaluate(() => chrome.action.onClicked.hasListeners())).toBe(true);
   await montar(context, { recibidas: [] });
   const page = await context.newPage();
   await page.goto(`${ORIGEN}/ConsultaReceptor.aspx`);
