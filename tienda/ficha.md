@@ -5,7 +5,8 @@ Textos para el panel de desarrollador (editor «Reporte Ágil», info@reporteagi
 ## Ficha
 
 - **Nombre** (del manifiesto): Facturas SAT a Excel, XML y PDF — Reporte Ágil
-- **Resumen** (del manifiesto): Relación de tus facturas emitidas y recibidas del portal del SAT en Excel, sin el tope de 500, con XML y PDF en carpetas.
+- **Nombre propuesto para 1.1.0:** «Facturas SAT a Excel, XML y PDF + validar CFDI — Reporte Ágil» (61 de 75 caracteres), para salir en las búsquedas de «validar cfdi» de la tienda. Sin aplicar: si se acepta, cambiar `name` en `manifest.json` y volver a correr `npm run zip`.
+- **Resumen** (del manifiesto, 126 de 132): Relación de tus facturas del SAT en Excel, sin el tope de 500, con XML y PDF en carpetas. Valida el estado y EFOS de tus CFDI.
 - **Categoría:** Productividad › Herramientas
 - **Idioma:** Español (Latinoamérica)
 - **Sitio web:** https://reporteagil.com/extensiones
@@ -13,7 +14,7 @@ Textos para el panel de desarrollador (editor «Reporte Ágil», info@reporteagi
 
 ### Descripción
 
-Descarga la relación de tus facturas emitidas y recibidas del portal del SAT en un Excel, sin el tope de 500, y baja el XML y el PDF de cada una ordenados en carpetas. Gratis y sin salir de tu navegador.
+Descarga la relación de tus facturas emitidas y recibidas del portal del SAT en un Excel, sin el tope de 500, y baja el XML y el PDF de cada una ordenados en carpetas. Además, valida ante el SAT el estado de los XML que ya tienes, uno o cientos a la vez. Gratis y sin salir de tu navegador.
 
 Cómo funciona
 1. Entra como siempre al portal de facturas del SAT («Consulta y recuperación de comprobantes») con tu contraseña o tu e.firma.
@@ -28,10 +29,17 @@ Lo que hace
 • Excel completo aunque pases de la cuota: el SAT solo deja bajar 2,000 XML al día. La relación en Excel sale con todas las facturas del periodo; los XML que falten (y sus PDF) se bajan al día siguiente con «Continuar descargas» y el Excel se completa con sus datos.
 • Puedes pausar y continuar. Si se cierra la sesión, vuelves a entrar y sigues sin perder lo avanzado.
 
+Validar CFDI ante el SAT
+• Pulsa el ícono de la extensión (o el enlace del panel) y arrastra tus XML o una carpeta completa: facturas recibidas, emitidas, de 3.2, 3.3 o 4.0.
+• Para cada CFDI consulta el servicio público de verificación del SAT, sin captcha y sin teclear: estado (vigente, cancelado o no encontrado), si se puede cancelar, estatus de la cancelación y si el emisor está en la lista de EFOS (empresas que facturan operaciones simuladas).
+• Muestra los valores tal como los devuelve el SAT y una explicación en claro, y los exporta a Excel con la fecha y hora de cada consulta.
+• Consulta de dos en dos y con pausas; puedes detener y seguir después. Los repetidos se consultan una sola vez.
+
 Privacidad
 • Todo ocurre en tu navegador: tus facturas no se envían a Reporte Ágil ni a terceros.
+• El validador solo envía al servicio de verificación del SAT, por cada CFDI, el folio fiscal (UUID), el RFC del emisor y del receptor, el total y los últimos 8 caracteres del sello. Lo hace únicamente cuando lo usas y con el permiso que Chrome te pide la primera vez.
 • La extensión nunca ve tu contraseña, tu CIEC ni tu e.firma.
-• Solo funciona en portalcfdi.facturaelectronica.sat.gob.mx.
+• Solo trabaja en portalcfdi.facturaelectronica.sat.gob.mx y, para el validador, en consultaqr.facturaelectronica.sat.gob.mx.
 • Política de privacidad: https://reporteagil.com/extensiones/facturas-sat/privacidad
 • Código fuente: https://github.com/gustavojmarrero/extension-facturas-sat
 
@@ -39,13 +47,14 @@ No es una herramienta del SAT ni está avalada por él. La publica Reporte Ágil
 
 ## Prácticas de privacidad
 
-- **Propósito único:** exportar a Excel la relación de facturas del portal del SAT («Consulta y recuperación de comprobantes») y descargar sus XML y PDF organizados en carpetas, con la sesión que abre el usuario.
+- **Propósito único:** trabajar con las facturas (CFDI) del SAT del usuario: exportar a Excel la relación de facturas del portal del SAT («Consulta y recuperación de comprobantes»), descargar sus XML y PDF organizados en carpetas con la sesión que abre el usuario, y validar el estado de esos XML ante el servicio público de verificación del SAT.
 - **downloads:** guardar en la carpeta de Descargas el Excel con la relación y los XML y PDF de cada factura, en subcarpetas por RFC, tipo, año y mes, y mostrar el Excel en la carpeta con el botón «Ver en Descargas». Además quita de la lista de descargas de Chrome los XML y PDF ya guardados, para no llenarla con miles de entradas; los archivos se quedan en el equipo.
 - **storage:** guardar en el equipo el avance de la descarga en curso, para continuar si se cierra la sesión o se agota la cuota diaria del SAT, la cuenta de descargas del día y la aceptación del aviso de datos.
-- **Permiso de host (portalcfdi.facturaelectronica.sat.gob.mx):** la extensión solo trabaja en el portal de facturas del SAT: muestra su panel en las páginas de consulta, llena el formulario de búsqueda con el periodo elegido, lee la tabla de resultados y descarga los XML y PDF con la sesión del usuario. No tiene acceso a ningún otro sitio.
+- **Permiso de host (portalcfdi.facturaelectronica.sat.gob.mx):** la extensión solo trabaja en el portal de facturas del SAT: muestra su panel en las páginas de consulta, llena el formulario de búsqueda con el periodo elegido, lee la tabla de resultados y descarga los XML y PDF con la sesión del usuario.
+- **Permiso de host opcional (consultaqr.facturaelectronica.sat.gob.mx):** lo pide el validador la primera vez que el usuario pulsa «Validar». Es el servicio público de verificación de CFDI del SAT; la extensión le envía la expresión impresa de cada CFDI (UUID, RFC del emisor y del receptor, total y últimos 8 caracteres del sello) y lee la respuesta (estado, cancelación y EFOS). No tiene acceso a ningún otro sitio.
 - **Código remoto:** no. Todo el código va en el paquete.
-- **Datos que maneja** (solo en el equipo, nunca se transmiten): información de identificación personal (RFC y nombres de emisores y receptores), información financiera y de pagos (las facturas) y contenido del sitio web (la tabla del portal).
-- **Certificaciones:** no se venden ni transfieren datos a terceros; no se usan para fines ajenos al propósito único; no se usan para determinar solvencia ni para préstamos.
+- **Datos que maneja:** información de identificación personal (RFC y nombres de emisores y receptores), información financiera y de pagos (las facturas) y contenido del sitio web (la tabla del portal). Se quedan en el equipo, salvo lo que el validador envía al SAT a petición del usuario: UUID, RFC del emisor y del receptor, total y 8 caracteres del sello de cada CFDI. Nada se envía a Reporte Ágil ni a otros terceros.
+- **Certificaciones:** no se venden ni transfieren datos a terceros fuera de los casos permitidos (la consulta al SAT es parte del propósito único y la pide el usuario); no se usan para fines ajenos al propósito único; no se usan para determinar solvencia ni para préstamos.
 - **Política de privacidad:** https://reporteagil.com/extensiones/facturas-sat/privacidad
 
 ## Distribución
@@ -64,3 +73,11 @@ Chrome no deja que una extensión (Claude in Chrome) maneje la Chrome Web Store,
 6. **Enviar para revisión.** Al aprobarse, poner su URL en `tienda_url` de `facturas-sat` en `reporteagil/src/data/sitios.json` y desplegar.
 
 La cuenta tiene un límite de 2 extensiones: con esta queda espacio para solo una de las dos de HAB-02.
+
+## Actualización a 1.1.0 (validador)
+
+1. Antes de enviar: publicar en reporteagil.com la política de privacidad con el párrafo del validador (qué se envía al SAT).
+2. **Paquete:** subir `paquetes/facturas-sat-1.1.0.zip` (`npm run zip`). Si se acepta el nombre propuesto, cambiar `name` en el manifiesto antes del zip.
+3. **Ficha:** descripción nueva (arriba) y, si se quiere, una captura del validador.
+4. **Prácticas de privacidad:** propósito único nuevo, justificación del permiso de host opcional y «Datos que maneja» con lo que se envía al SAT.
+5. La advertencia de permisos no cambia (el host nuevo es opcional y `action` no pide permisos), así que Chrome no desactiva la extensión a quienes ya la tienen.
