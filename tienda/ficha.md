@@ -82,3 +82,7 @@ La cuenta tiene un límite de 2 extensiones: con esta queda espacio para solo un
 5. La advertencia de permisos no cambia (el host nuevo es opcional y `action` no pide permisos), así que Chrome no desactiva la extensión a quienes ya la tienen.
 
 Enviada a revisión el 17 de octubre de 2026 con publicación automática: paquete, descripción nueva, propósito único y justificación del permiso de host (los dos dominios en el mismo campo). Sin captura del validador.
+
+## Actualización a 1.1.1 (enlace a Control Financiero Pyme)
+
+Solo cambia la hoja Resumen del Excel: agrega la fila «Ingresos y gastos» con un enlace a la plantilla Control Financiero Pyme de reporteagil.com (con UTM, sin datos de las facturas). Sin permisos nuevos ni cambios en la ficha o en las prácticas de privacidad: basta subir `paquetes/facturas-sat-1.1.1.zip` (`npm run zip`) y enviarlo a revisión.
