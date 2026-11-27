@@ -43,6 +43,11 @@ test('la relación tiene facturas ordenadas, cobertura y resumen', () => {
   assert.equal(facturas.filas[1][25], 'No');
   assert.deepEqual(cobertura.filas.map((f) => f[2]), ['Completo', 'Incompleto']);
   assert.ok(resumen.filas.some(([c, v]) => c === 'Cobertura' && /1 consulta/.test(v)));
+  const enlace = resumen.filas.find(([c]) => c === 'Ingresos y gastos')?.[1]?.url;
+  const url = new URL(enlace);
+  assert.equal(url.pathname, '/plantillas/control-financiero-pyme');
+  assert.equal(url.searchParams.get('utm_source'), 'extension-facturas-sat');
+  assert.equal(url.searchParams.get('utm_content'), 'excel');
 });
 
 test('el .xlsx abre en LibreOffice con sus tres hojas', { skip: !soffice() && 'sin LibreOffice' }, () => {

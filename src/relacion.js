@@ -5,6 +5,9 @@ import { etiqueta } from './intervalos.js';
 import { carpetaTipo } from './nombres.js';
 
 export const ENLACE_SITIO = 'https://reporteagil.com/?utm_source=extension-facturas-sat&utm_medium=excel';
+// Plantilla de pago de Reporte Ágil para llevar ingresos y gastos con las facturas de la relación.
+export const ENLACE_CONTROL_FINANCIERO =
+  'https://reporteagil.com/plantillas/control-financiero-pyme?utm_source=extension-facturas-sat&utm_medium=referral&utm_campaign=extension-facturas-sat&utm_content=excel';
 
 // «$1,354.56» o «-$1,354.56» → número.
 export function importe(texto) {
@@ -93,6 +96,7 @@ export function hojasDeRelacion(trabajo, ahora = new Date()) {
     ['', ''],
     ['Herramienta', 'Facturas SAT a Excel, XML y PDF de Reporte Ágil. No es una herramienta del SAT.'],
     ['Privacidad', 'Tus facturas se procesaron en tu navegador; no se enviaron a ningún servidor de Reporte Ágil.'],
+    ['Ingresos y gastos', { url: ENLACE_CONTROL_FINANCIERO, texto: 'Plantilla Control Financiero Pyme (Excel y Google Sheets)' }],
     ['Más herramientas', { url: ENLACE_SITIO, texto: 'reporteagil.com' }],
   ];
 
