@@ -86,3 +86,5 @@ Enviada a revisión el 17 de octubre de 2026 con publicación automática: paque
 ## Actualización a 1.1.1 (enlace a Control Financiero Pyme)
 
 Solo cambia la hoja Resumen del Excel: agrega la fila «Ingresos y gastos» con un enlace a la plantilla Control Financiero Pyme de reporteagil.com (con UTM, sin datos de las facturas). Sin permisos nuevos ni cambios en la ficha o en las prácticas de privacidad: basta subir `paquetes/facturas-sat-1.1.1.zip` (`npm run zip`) y enviarlo a revisión.
+
+Enviada a revisión el 27 de noviembre de 2026 con publicación automática (panel: 1.1.1 «Revisión pendiente»).
